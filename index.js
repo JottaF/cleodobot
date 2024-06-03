@@ -30,8 +30,13 @@ client.on("qr", (qr) => {
 });
 
 client.on("message_create", async (message) => {
+  if (message.body.includes("!ajuda")) {
+    message.reply(
+      "*Registro de vendas*\nPara registrar vendas digite !venda seguido do nome da vendedora, nas linhas seguintes digite a quantidade e o código do produto vendido, aqui estão os código:\n- bu - Brigadeiro unitário\n- cx4 - Caixinha de 4 brigs\n- cx6 - Caixinha de 6\n- cx12 - Caixinha de 12\n- cxe - Caixa especial\n- ts - Torta salgada\n- td - Torta doce\n\nUm exemplo de como fazer:\n!venda Paula\n2 cx4\n3 ts\n1 bu\n\n*Registro de despesa*\nPara registrar uma despesa use o comando !despesa e nas próximas linhas descreva o valor gasto, uma descrição básica do que foi comprado e a origem do dinheiro. A origem pode ser: Produção, Líquido, Lp (Líquido + produção), Comissão, Total bruto ou Reserva.\nAbaixo há um exemplo de despesa:\n\n!despesa\n17.55\nCompra de itens para torta\nProdução\n\nO valor sempre deve usar *.* para fazer a separação, não use *,*"
+    );
+  }
   // Registro de vendas
-  if (message.body.includes("!vendas")) {
+  else if (message.body.includes("!venda") && message.body[0] == '!') {
     const data = salesMessage(message.body);
     let lastRow = await getLastRow("A");
     data.forEach(async (line) => {
@@ -40,7 +45,9 @@ client.on("message_create", async (message) => {
     });
 
     message.reply("Ok, venda registrada!🥳🤑💹");
-  } else if (message.body.includes("!despesa")) {
+  }
+  // Registro de despesas
+  else if (message.body.includes("!despesa") && message.body[0] == '!') {
     const data = expenseMessage(message.body);
     let lastRow = await getLastRow("K");
     await writeToExpenseSheet(data, lastRow + 1);
